@@ -89,8 +89,9 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  const result = args.reverse();
+  return (x) => result.reduce((sum, arg, index) => sum + arg * x ** index, 0);
 }
 
 /**
@@ -134,8 +135,18 @@ function memoize(func) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return () => {
+    let counter = attempts;
+    while (counter > 0) {
+      try {
+        return func();
+      } catch {
+        counter -= 1;
+      }
+    }
+    return 'Lint bless you';
+  };
 }
 
 /**
@@ -161,8 +172,14 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const argsOutputFormat = JSON.stringify(args).slice(1, -1);
+    logFunc(`${func.name}(${argsOutputFormat}) starts`);
+    const result = func(...args);
+    logFunc(`${func.name}(${argsOutputFormat}) ends`);
+    return result;
+  };
 }
 
 /**
